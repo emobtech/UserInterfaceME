@@ -14,7 +14,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 //#ifdef MIDP20
 import javax.microedition.lcdui.game.Sprite;
-
+//#endif
 import com.emobtech.uime.util.StringUtil;
 
 

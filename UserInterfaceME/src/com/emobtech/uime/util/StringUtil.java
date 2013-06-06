@@ -521,7 +521,7 @@ public class StringUtil {
 				return text;
 			}
 		} else {
-			if (searchStr.equalsIgnoreCase(replacementStr)) {
+			if (StringUtil.equalsIgnoreCase(searchStr, replacementStr)) {
 				return text;
 			}
 		}

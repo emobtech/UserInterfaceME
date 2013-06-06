@@ -1,4 +1,4 @@
-<project name="JME-UI-Components" default="buildAll" basedir=".">
+<project name="UIME" default="buildAll" basedir=".">
 
 	<property file="build.properties"/>
 	
@@ -6,10 +6,6 @@
 		<taskdef resource="antenna.properties">
 			<classpath location="${path.antenna.jar}"/>
 		</taskdef>
-	</target>
-	
-	<target name="version_number" depends="loadAntenna">
-		<wtkjad jadfile="${app.name}.jad" update="true" autoversion="${app.autoversion}"/>
 	</target>
 	
 	<target name="clean">
@@ -27,8 +23,22 @@
 		<mkdir dir="${path.build}"/>
 		<mkdir dir="${path.build.preprocessed}"/>
 		<mkdir dir="${path.build.classes}"/>
+		<mkdir dir="${path.javadoc}" />
 		<mkdir dir="${path.output}" />
 		<mkdir dir="${path.output.device}"/>
+	</target>
+	
+	<target name="javadoc">
+		  <javadoc sourcepath="${path.src}"
+		           destdir="${path.javadoc}"
+		           author="true"
+		           version="true"
+		           use="true"
+		           windowtitle="User Interface ME - UIME"
+		  		   locale="en_US">
+		  	<doctitle><![CDATA[<h1>User Interface ME</h1>]]></doctitle>
+		  	<bottom><![CDATA[<i>Copyright &#169; 2013 eMob Tech. All Rights Reserved.</i>]]></bottom>
+		  </javadoc>
 	</target>
 	
 	<target name="preprocessor" depends="init">
@@ -38,96 +48,38 @@
 	<target name="compile" depends="preprocessor">
 		<wtkbuild srcdir="${path.build.preprocessed}" destdir="${path.build.classes}" sourcepath="" encoding="${app.src.encoding}" source="${app.src.version}">
 			<classpath refid="app.classpath"/>
-			
-			<exclude name="br/framework/jme/sample/midlet/GroupedListSampleMIDlet"/>
-			<exclude name="br/framework/jme/sample/ui/GroupedListSample"/>
-			<exclude name="br/framework/jme/ui/GroupedItem"/>
-			<exclude name="br/framework/jme/ui/GroupedList"/>
 		</wtkbuild>
 	</target>
 	
-	<target name="jad">
-		<copy file="${app.name}.jad" todir="${path.output.device}"/>
-		
-		<wtkjad jadfile="${path.output.device}/${app.name}.jad" update="true">
-			<attribute name="MicroEdition-Configuration" value="CLDC-${wtk.cldc.version}"/>
-			<attribute name="MicroEdition-Profile" value="MIDP-${wtk.midp.version}"/>
-		</wtkjad>
+	<target name="preverify">
+		<wtkpreverify classpathref="app.classpath" jarfile="${path.output.device}/${lib.name}-v${lib.version}.jar"/>
 	</target>
 	
-	<target name="lib">
-		<jar basedir="${path.build.classes}" destfile="${path.output.device}/${lib.name}.jar">
-			<exclude name="br/framework/jme/sample/**"/>
+	<target name="lib" depends="compile">
+		<jar basedir="${path.build.classes}" destfile="${path.output.device}/${lib.name}-v${lib.version}.jar">
 			<fileset dir="${path.res}">
-				<exclude name="etc/**"/>
-				<exclude name="images/icon_error_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_info_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_confirmation_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_warning_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_calendar.png" if="app.exclude.images"/>
-				<exclude name="images/icon_sig_min.png"/>
-				<exclude name="images/icon_sig_max.png"/>
-				<exclude name="images/Thumbs.db"/>
+				<exclude name="**/etc/**"/>
 			</fileset>
-			
-			<zipfileset src="${path.lib}/${path.lib.kxml.jar}"/>
 		</jar>
 	</target>
 	
-	<target name="package" depends="compile, jad, lib">
-		<wtkpackage jadfile="${path.output.device}/${app.name}.jad" jarfile="${path.output.device}/${app.name}.jar" preverify="true" manifestencoding="${app.src.encoding}">
-			<classpath refid="app.classpath"/>
-			
-			<fileset dir="${path.build.classes}"/>
-			
-			<fileset dir="${path.res}">
-				<exclude name="images/icon_error_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_info_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_confirmation_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_warning_message.png" if="app.exclude.images"/>
-				<exclude name="images/icon_calendar.png" if="app.exclude.images"/>
-				<exclude name="images/icon_sig_min.png"/>
-				<exclude name="images/icon_sig_max.png"/>
-				<exclude name="images/Thumbs.db"/>
-			</fileset>
-			
-			<zipfileset src="${path.lib}/${path.lib.kxml.jar}"/>
-		</wtkpackage>
-		
-		<antcall target="obfuscate"/>
-	</target>
-	
-	<target name="obfuscate" if="app.obfuscate">
-		<wtkobfuscate jadfile="${path.output.device}/${app.name}.jad" jarfile="${path.output.device}/${app.name}.jar">
-	        <argument value="'-keep public class * extends javax.microedition.midlet.MIDlet'"/>
-	        <argument value="'-keep public class * extends br.framework.jme.ui.Skin'"/>
-			<argument value="'-keep public class * extends br.framework.jme.ui.OptionPane'"/>
-			<argument value="-dontusemixedcaseclassnames -dontnote -repackageclasses 'bin' -overloadaggressively -allowaccessmodification -microedition"/>
-		</wtkobfuscate>
-		
-		<wtkpreverify jadfile="${path.output.device}/${app.name}.jad" jarfile="${path.output.device}/${app.name}.jar"/>
-	</target>
-	
-	<target name="prc" depends="loadAntenna">
-		<wtkmakeprc jadfile="${path.output.device}/${app.name}.jad" jarfile="${path.output.device}/${app.name}.jar" prcfile="${path.output.device}/${app.name}.prc" name="${app.name}" longname="${app.name}" creator="${app.creatorid}" type="appl" highres="false"/>
-		
-		<delete dir="${path.output.device}" excludes="*.prc, ${lib.name}.jar" includes="*.*"/>
-	</target>
+	<target name="package">
+		<property name="lib.package" value="${lib.name}-v${lib.version}"/>
 
-	<target name="cod">
-	    <exec executable="${path.blackberry.home}/bin/rapc" dir="${path.output.device}">
-	        <arg value="import=${path.blackberry.home}/lib/net_rim_api.jar"/>
-	        <arg value="codename=${app.name}"/>
-	        <arg value="-midlet"/>
-	        <arg value="jad=${app.name}.jad"/>
-	        <arg value="${app.name}.jar"/>
-	    </exec>
-		
-		<delete dir="${path.output.device}" excludes="*.cod, ${lib.name}.jar" includes="*.*"/>
+		<zip destfile="${path.output.device}/${lib.package}.zip">
+			<zipfileset dir="${path.build.preprocessed}" prefix="${lib.package}/src" includes="**/*.*"/>
+			<zipfileset dir="${path.lib}" prefix="${lib.package}/lib">
+				<include name="${path.lib.kxml.jar}"/>
+			</zipfileset>	
+			<zipfileset dir="${path.output.device}" prefix="${lib.package}/dist" includes="**/*.jar"/>
+		    <zipfileset dir="${path.javadoc}" prefix="${lib.package}/doc/javadoc" includes="**/*.*"/>
+		</zip>
 	</target>
+	
+	<target name="run" depends="lib, preverify, javadoc, package"/>
 	
 	<target name="build_midp20">
-		<antcall target="package">
+		<antcall target="run">
 			<param name="wtk.midpapi" value="${path.midp20};${path.cldc10};${path.wma}"/>
 			<param name="wtk.midp.version" value="2.0"/>
 			<param name="wtk.cldc.version" value="1.0"/>
@@ -137,7 +89,7 @@
 	</target>
 	
 	<target name="build_midp10">
-		<antcall target="package">
+		<antcall target="run">
 			<param name="wtk.midpapi" value="${path.midp10};${path.cldc10};${path.wma}"/>
 			<param name="wtk.midp.version" value="1.0"/>
 			<param name="wtk.cldc.version" value="1.0"/>
@@ -146,46 +98,5 @@
 		</antcall>
 	</target>
 	
-	<target name="build_palmos">
-		<antcall target="package">
-			<param name="wtk.midpapi" value="${path.midp20};${path.cldc11};${path.wma}"/>
-			<param name="wtk.midp.version" value="2.0"/>
-			<param name="wtk.cldc.version" value="1.1"/>
-			<param name="path.output.device" value="${path.output.palmos}"/>
-			<param name="app.preprocessor.symbols" value="MIDP20,CLDC11"/>
-		</antcall>
-		
-		<antcall target="prc">
-			<param name="path.output.device" value="${path.output.palmos}"/>
-		</antcall>
-	</target>
-	
-	<target name="build_blackberry">
-		<antcall target="package">
-			<param name="wtk.midpapi" value="${path.midp10};${path.cldc10};${path.wma}"/>
-			<param name="wtk.midp.version" value="1.0"/>
-			<param name="wtk.cldc.version" value="1.0"/>
-			<param name="path.output.device" value="${path.output.blackberry}"/>
-			<param name="app.preprocessor.symbols" value="MIDP10,CLDC10"/>
-		</antcall>
-		
-		<antcall target="cod">
-			<param name="path.output.device" value="${path.output.blackberry}"/>
-		</antcall>
-	</target>
-	
-	<target name="copy_lib_to_m-stocks_app">
-		<copy todir="${path.mstocksapp.lib}">
-		    <fileset dir="${path.output}">
-		        <include name="**/${lib.name}.jar"/>
-		    </fileset>
-		</copy>
-		<copy todir="${path.mstocksapp.lib}">
-		    <fileset dir="${path.output.midp20}">
-		        <include name="**/${lib.name}.jar"/>
-		    </fileset>
-		</copy>
-	</target>
-	
-	<target name="buildAll" depends="version_number, build_midp10, build_midp20, build_palmos, build_blackberry"/>
+	<target name="buildAll" depends="build_midp10, build_midp20"/>
 </project>
