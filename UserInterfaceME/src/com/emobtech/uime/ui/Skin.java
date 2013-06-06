@@ -5,12 +5,11 @@
  * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
  * All rights reserved
  */
-package br.framework.jme.ui;
+package com.emobtech.uime.ui;
 
 import com.emobtech.uime.midlet.MIDlet;
+import com.emobtech.uime.ui.skin.DefaultSkin;
 import com.emobtech.uime.util.ui.UIUtil;
-
-import br.framework.jme.ui.skin.DefaultSkin;
 
 /**
  * <p>

@@ -5,7 +5,7 @@
  * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
  * All rights reserved
  */
-package br.framework.jme.ui;
+package com.emobtech.uime.ui;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;

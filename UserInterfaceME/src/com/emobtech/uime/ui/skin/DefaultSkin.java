@@ -5,27 +5,26 @@
  * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
  * All rights reserved
  */
-package br.framework.jme.ui.skin;
+package com.emobtech.uime.ui.skin;
 
 import javax.microedition.lcdui.Font;
 
+import com.emobtech.uime.ui.Calendar;
+import com.emobtech.uime.ui.CheckBox;
+import com.emobtech.uime.ui.ComboBox;
+import com.emobtech.uime.ui.CommandMenu;
+import com.emobtech.uime.ui.Control;
+import com.emobtech.uime.ui.DateField;
+import com.emobtech.uime.ui.Form;
+import com.emobtech.uime.ui.Grid;
+import com.emobtech.uime.ui.ImageViewer;
+import com.emobtech.uime.ui.List;
+import com.emobtech.uime.ui.Screen;
+import com.emobtech.uime.ui.Skin;
+import com.emobtech.uime.ui.TextArea;
+import com.emobtech.uime.ui.TextBox;
+import com.emobtech.uime.ui.TextField;
 import com.emobtech.uime.util.ui.UIUtil;
-
-import br.framework.jme.ui.Calendar;
-import br.framework.jme.ui.CheckBox;
-import br.framework.jme.ui.ComboBox;
-import br.framework.jme.ui.CommandMenu;
-import br.framework.jme.ui.Control;
-import br.framework.jme.ui.DateField;
-import br.framework.jme.ui.Form;
-import br.framework.jme.ui.Grid;
-import br.framework.jme.ui.ImageViewer;
-import br.framework.jme.ui.List;
-import br.framework.jme.ui.Screen;
-import br.framework.jme.ui.Skin;
-import br.framework.jme.ui.TextArea;
-import br.framework.jme.ui.TextBox;
-import br.framework.jme.ui.TextField;
 
 /**
  * <p>
