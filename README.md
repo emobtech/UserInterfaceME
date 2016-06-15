@@ -19,3 +19,5 @@
 ## External Links
 
 * [Website](https://sites.google.com/site/uicomponents4jme/)
+* [eMob Tech](http://www.emobtech.com/)
+* [J2ME Group Blog](http://j2megroup.blogspot.com/)
